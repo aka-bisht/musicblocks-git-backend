@@ -2,8 +2,9 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import projectRouter from './routes/projectRoutes';
-
 dotenv.config();
+import { setupSwagger } from './swagger';
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -12,6 +13,11 @@ app.use(express.json());
 
 app.use('/api/github', projectRouter);
 
-app.listen(PORT, () => {
+function main() {
+  setupSwagger(app);
+  app.listen(PORT, () => {
     console.log(`Server running on PORT ${PORT}`);
-});
+  });
+}
+main();
+

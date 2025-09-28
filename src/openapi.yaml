@@ -1,0 +1,280 @@
+openapi: 3.0.3
+info:
+  title: Project Service API
+  version: 1.0.0
+  description: API documentation for the Musicblocks project backend.
+
+servers:
+  - url: http://localhost:3000/api/github
+    description: Local development server
+
+paths:
+  /create:
+    post:
+      summary: Create a new project
+      tags:
+        - Projects
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - projectData
+              properties:
+                repoName:
+                  type: string
+                  example: "My First Repo"
+                theme:
+                  type: string
+                  example: "default"
+                description:
+                  type: string
+                  example: "Musicblocks project"
+                projectData:
+                  type: object
+                  example:
+                    blocks:
+                      - id: 1
+                        type: note
+                        value: C4
+      responses:
+        "200":
+          description: Project created successfully
+        "400":
+          description: Missing required project data
+        "500":
+          description: Internal server error
+
+  /edit:
+    put:
+      summary: Edit an existing project
+      tags:
+        - Projects
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - repoName
+                - projectData
+                - commitMessage
+              properties:
+                repoName:
+                  type: string
+                  example: "my-musicblocks-project"
+                projectData:
+                  type: object
+                  example:
+                    blocks:
+                      - id: 2
+                        type: note
+                        value: D4
+                commitMessage:
+                  type: string
+                  example: "Updated tempo and note sequence"
+      responses:
+        "200":
+          description: Project updated successfully
+        "300":
+          description: Commit message is required
+        "500":
+          description: Internal server error
+
+  /fork:
+    post:
+      summary: Fork an existing project
+      tags:
+        - Projects
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - repositoryName
+              properties:
+                repositoryName:
+                  type: string
+                  example: "musicblocks-repo"
+      responses:
+        "200":
+          description: Repository forked successfully
+        "400":
+          description: Missing required fields
+        "500":
+          description: Could not fork repository
+
+  /fork-with-history:
+    post:
+      summary: Fork a project with full history
+      tags:
+        - Projects
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - sourceRepo
+              properties:
+                sourceRepo:
+                  type: string
+                  example: "musicblocks-repo"
+      responses:
+        "200":
+          description: Fork with history successful
+        "400":
+          description: Missing required parameters
+        "500":
+          description: Failed to fork with history
+
+  /commits:
+    get:
+      summary: Get commit history for a project
+      tags:
+        - Commits
+      parameters:
+        - name: repoName
+          in: query
+          required: true
+          schema:
+            type: string
+            example: "my-musicblocks-project"
+      responses:
+        "200":
+          description: Commit history retrieved successfully
+        "400":
+          description: No repository name provided
+        "500":
+          description: Internal server error
+
+  /project-data:
+    get:
+      summary: Get project data
+      tags:
+        - Projects
+      parameters:
+        - name: repoName
+          in: query
+          required: true
+          schema:
+            type: string
+            example: "my-musicblocks-project"
+      responses:
+        "200":
+          description: Project data retrieved successfully
+        "400":
+          description: No repoName provided
+        "500":
+          description: Internal server error
+
+  /getProjectDataAtCommit:
+    get:
+      summary: Get project data at a specific commit
+      tags:
+        - Projects
+      parameters:
+        - name: repoName
+          in: query
+          required: true
+          schema:
+            type: string
+            example: "my-musicblocks-project"
+        - name: sha
+          in: query
+          required: true
+          schema:
+            type: string
+            example: "a1b2c3"
+      responses:
+        "200":
+          description: Project data for the commit retrieved successfully
+        "400":
+          description: Invalid repository name or SHA
+        "500":
+          description: Internal server error
+
+  /allRepos:
+    get:
+      summary: Get all repositories (paginated)
+      tags:
+        - Projects
+      parameters:
+        - name: page
+          in: query
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          description: Repositories retrieved successfully
+        "400":
+          description: Page parameter missing
+        "500":
+          description: Internal server error
+
+  /openPR:
+    get:
+      summary: Get open pull requests for a project
+      tags:
+        - Pull Requests
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - repo
+              properties:
+                repo:
+                  type: string
+                  example: "my-musicblocks-project"
+      responses:
+        "200":
+          description: Open pull requests retrieved successfully
+        "400":
+          description: Missing or invalid repo parameter
+        "500":
+          description: Internal server error
+
+  /create-pr:
+    post:
+      summary: Create a pull request from a fork
+      tags:
+        - Pull Requests
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - forkRepo
+                - updatedProjectData
+              properties:
+                forkRepo:
+                  type: string
+                  example: "forked-musicblocks-repo"
+                updatedProjectData:
+                  type: object
+                  example:
+                    blocks:
+                      - id: 1
+                        type: note
+                        value: C4
+      responses:
+        "200":
+          description: Pull request created successfully
+        "400":
+          description: Missing forkRepo or updatedProjectData
+        "500":
+          description: Failed to create pull request
+

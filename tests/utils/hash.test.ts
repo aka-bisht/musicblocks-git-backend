@@ -20,8 +20,6 @@ describe('Hash Utilities', () => {
       const mockRandomBytes = Buffer.from('test-random-bytes-32-chars-long');
       (mockCrypto.randomBytes as unknown as jest.MockedFunction<() => Buffer>).mockReturnValue(mockRandomBytes);
 
-      const result = generateKey();
-
       expect(mockCrypto.randomBytes).toHaveBeenCalledWith(32);
       expect(result).toBe('746573742d72616e646f6d2d62797465732d33322d63686172732d6c6f6e67');
     });
@@ -54,8 +52,7 @@ describe('Hash Utilities', () => {
 
   describe('hashKey', () => {
     it('should hash a key using SHA-256', () => {
-      const mockHash = {
-        update: jest.fn().mockReturnThis(),
+      const mockHash = { update: jest.fn().mockReturnThis(),
         digest: jest.fn().mockReturnValue('hashed-result'),
       };
       mockCrypto.createHash.mockReturnValue(mockHash as never);
