@@ -89,9 +89,10 @@ cd musicblocks-git-backend
 npm install
 npm run build
 npm start
+```
 
+The server listens on `PORT` from `.env` (default is `5000` in code if unset).
 
-The server listens on `PORT` from `.env` default is `5000` in code if unset.
 
 ## API reference
 
